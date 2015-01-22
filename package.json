@@ -21,8 +21,15 @@
     "keywords": [
         "cleverstack",
         "cleverstack-module",
-        "cleverstack-modules",
-        "cleverstack-backend"
+        "cleverstack-backend",
+        "account",
+        "accounts",
+        "saas",
+        "paas",
+        "passport",
+        "auth",
+        "node-accounts",
+        "resource-account"
     ],
     "license":      "BSD-2-Clause",
     "dependencies": {
