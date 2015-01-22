@@ -1,0 +1,23 @@
+language: node_js
+
+node_js:
+  - '0.10'
+
+before_install:
+  - npm install -g grunt-cli
+  - npm install -g bower
+  - npm install -g cleverstack-cli
+  - npm install ncp
+  - npm install bluebird
+  - npm install rimraf
+
+before_script:
+  - mysql -e 'create database test_db;'
+  - export NODE_ENV=test
+  - export NODE_PATH=./lib/:./modules/
+  - export DEBUG=ModuleLoader,Modules,Models,Services,cleverOrm,cleverAuth
+  - node tests/before_travis_test.js
+  - cd testProject
+
+services:
+  - mysql

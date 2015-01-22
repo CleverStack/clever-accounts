@@ -1,0 +1,6 @@
+{
+    "clever-users": {
+        "driver": "ORM",
+        "modelAssociations": {}
+    }
+}
