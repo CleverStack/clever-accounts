@@ -1,6 +1,17 @@
 {
     "clever-users": {
         "driver": "ORM",
-        "modelAssociations": {}
+        "modelAssociations": {
+            "Account": {
+                "hasMany": [
+                    "User"
+                ]
+            },
+            "User": {
+                "belongsTo": [
+                    "Account"
+                ]
+            }
+        }
     }
 }
