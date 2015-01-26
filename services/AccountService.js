@@ -170,7 +170,7 @@ function define( Promise, Service, AccountModel, UserService, async, config, _, 
                                 
                                 // Implement user options!
                                 active:         true,
-                                confirmed:      config[ 'clever-auth' ].email_confirmation === true ? false : true,
+                                confirmed:      config[ 'clever-accounts' ].emailConfirmation === true ? false : true,
 
                                 // Is this actually needed?
                                 hasAdminRight:  false
@@ -190,7 +190,7 @@ function define( Promise, Service, AccountModel, UserService, async, config, _, 
                         },
 
                         function authenticateUser( callback ) {
-                            if ( config[ 'clever-auth' ].email_confirmation === true ) {
+                            if ( config[ 'clever-accounts' ].emailConfirmation === true ) {
                                 options.transaction.commit().then( function() {
                                     UserService
                                     .authenticate({

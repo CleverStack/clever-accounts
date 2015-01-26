@@ -1,6 +1,9 @@
 {
-    "clever-users": {
+    "clever-accounts": {
         "driver": "ORM",
+
+        "emailConfirmation" : false,
+
         "modelAssociations": {
             "Account": {
                 "hasMany": [
