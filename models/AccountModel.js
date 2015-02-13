@@ -29,6 +29,7 @@ module.exports = function( Model, config ) {
         },
         subDomain: {
             type:           String,
+            length:         191,
             required:       true,
             unique:         true
         }
