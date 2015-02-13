@@ -1,22 +1,22 @@
-var injector                = require( 'injector' )
-  , packageJson             = injector.getInstance( 'packageJson' );
+var injector                = require('injector')
+  , packageJson             = injector.getInstance('packageJson');
 
-if ( packageJson.bundledDependencies.indexOf( 'clever-roles' ) !== -1 ) {
-    module.exports = function( Promise, Service, AccountModel, UserService, async, config, _, PermissionService, RoleService ) {
-        return define( Promise, Service, AccountModel, UserService, async, config, _, PermissionService, RoleService );
+if (packageJson.bundledDependencies.indexOf('clever-roles') !== -1) {
+    module.exports = function(Promise, Service, AccountModel, UserService, async, config, _, PermissionService, RoleService) {
+        return define(Promise, Service, AccountModel, UserService, async, config, _, PermissionService, RoleService);
     };
 } else {
-    module.exports = function( Promise, Service, AccountModel, UserService, async, config, _ ) {
-        return define( Promise, Service, AccountModel, UserService, async, config, _, null, null );
+    module.exports = function(Promise, Service, AccountModel, UserService, async, config, _) {
+        return define(Promise, Service, AccountModel, UserService, async, config, _, null, null);
     };
 }
 
-function define( Promise, Service, AccountModel, UserService, async, config, _, PermissionService, RoleService ) {
+function define(Promise, Service, AccountModel, UserService, async, config, _, PermissionService, RoleService) {
     return Service.extend({
 
         model: AccountModel,
 
-        create: function( data, options ) {
+        create: function(data, options) {
             var create      = this._super
               , service     = this
               , account     = null
@@ -26,42 +26,42 @@ function define( Promise, Service, AccountModel, UserService, async, config, _, 
 
             options = options || {};
 
-            return new Promise( function( resolve, reject ) {
+            return new Promise(function(resolve, reject) {
                 async.waterfall(
                     [
-                        function startTransaction( callback ) {
+                        function startTransaction(callback) {
                             service
-                                .transaction( options )
-                                .then( function() {
-                                    callback( null );
+                                .transaction(options)
+                                .then(function() {
+                                    callback(null);
                                 })
-                                .catch( callback );
+                                .catch(callback);
                         },
 
-                        function createAccount( callback ) {
+                        function createAccount(callback) {
                             var accountData = {
                                 name:       data.company,
                                 email:      data.email,
-                                active:     RoleService !== null ? ( !config[ 'clever-roles' ].account.requireConfirmation ? true : false ) : true
+                                active:     RoleService !== null ? (!config[ 'clever-roles' ].account.requireConfirmation ? true : false) : true
                             };
 
-                            if ( data.subDomain ) {
+                            if (data.subDomain) {
                                 accountData.subDomain = data.subDomain;
-                            } else if ( data.domain ) {
-                                accountData.subDomain = data.domain.replace( 'http://', '' ).replace( 'www.', '' ).split( '.' )[ 0 ];
+                            } else if (data.domain) {
+                                accountData.subDomain = data.domain.replace('http://', '').replace('www.', '').split('.')[ 0 ];
                             }
 
                             create
-                                .apply( service, [ accountData, options ])
-                                .then( function( _account ) {
+                                .apply(service, [ accountData, options ])
+                                .then(function(_account) {
                                     account = _account;
-                                    callback( null );
+                                    callback(null);
                                 })
-                                .catch( callback )
+                                .catch(callback)
                         },
 
-                        function findDefaultPermissions( callback ) {
-                            if ( PermissionService !== null ) {
+                        function findDefaultPermissions(callback) {
+                            if (PermissionService !== null) {
                                 PermissionService
                                     .findAll({
                                         where: {
@@ -69,66 +69,66 @@ function define( Promise, Service, AccountModel, UserService, async, config, _, 
                                             systemPermission: true
                                         }
                                     }, options)
-                                    .then( callback.bind( null, null ) )
-                                    .catch( callback );
+                                    .then(callback.bind(null, null))
+                                    .catch(callback);
                             } else {
-                                callback( null, null );
+                                callback(null, null);
                             }
                         },
 
-                        function createDefaultPermissions( defaultPermissions, callback ) {
-                            if ( PermissionService !== null ) {
+                        function createDefaultPermissions(defaultPermissions, callback) {
+                            if (PermissionService !== null) {
                                 async.forEach(
                                     defaultPermissions,
-                                    function createDefaultPermission( defaultPermission, done ) {
+                                    function createDefaultPermission(defaultPermission, done) {
                                         PermissionService
                                             .create({
                                                 AccountId:          account.id,
                                                 action:             defaultPermission.action,
                                                 description:        defaultPermission.description,
                                                 systemPermission:   true
-                                            }, options )
-                                            .then( function( permission ) {
-                                                permissions.push( permission );
-                                                done( null );
+                                            }, options)
+                                            .then(function(permission) {
+                                                permissions.push(permission);
+                                                done(null);
                                             })
-                                            .catch( done );
+                                            .catch(done);
                                     },
                                     callback
-                                );
+                               );
                             } else {
-                                callback( null );
+                                callback(null);
                             }
                         },
 
-                        function findDefaultRoles( callback ) {
-                            if ( RoleService !== null ) {
+                        function findDefaultRoles(callback) {
+                            if (RoleService !== null) {
                                 RoleService
                                     .findAll({
                                         where: {
                                             AccountId:  null,
                                             systemRole: true
                                         }
-                                    }, options )
-                                    .then( callback.bind( null, null ) )
-                                    .catch( callback );
+                                    }, options)
+                                    .then(callback.bind(null, null))
+                                    .catch(callback);
                             } else {
-                                callback( null, null );
+                                callback(null, null);
                             }
                         },
 
-                        function createDefaultRoles( defaultRoles, callback ) {
-                            if ( RoleService !== null ) {
+                        function createDefaultRoles(defaultRoles, callback) {
+                            if (RoleService !== null) {
                                 async.forEach(
                                     defaultRoles,
-                                    function createDefaultRole( defaultRole, done ) {
+                                    function createDefaultRole(defaultRole, done) {
                                         var rolePermissions = [];
 
-                                        if ( defaultRole.Permissions ) {
-                                            defaultRole.Permissions.forEach( function( rolePermission ) {
-                                                var defaultPermission = _.findWhere( permissions, { action: rolePermission.action } );
-                                                if ( defaultPermission ) {
-                                                    rolePermissions.push( defaultPermission.id );
+                                        if (defaultRole.Permissions) {
+                                            defaultRole.Permissions.forEach(function(rolePermission) {
+                                                var defaultPermission = _.findWhere(permissions, { action: rolePermission.action });
+                                                if (defaultPermission) {
+                                                    rolePermissions.push(defaultPermission.id);
                                                 }
                                             })
                                         }
@@ -140,24 +140,24 @@ function define( Promise, Service, AccountModel, UserService, async, config, _, 
                                                 name:           defaultRole.name,
                                                 description:    defaultRole.description,
                                                 Permissions:    rolePermissions
-                                            }, options )
-                                            .then( function( _role ) {
+                                            }, options)
+                                            .then(function(_role) {
                                                 // For now we get the first role and assign the user to that role
-                                                if ( role === null ) {
+                                                if (role === null) {
                                                     role = _role;
                                                 }
-                                                done( null );
+                                                done(null);
                                             })
-                                            .catch( done );
+                                            .catch(done);
                                     },
                                     callback
-                                );
+                               );
                             } else {
-                                callback( null );
+                                callback(null);
                             }
                         },
 
-                        function createUser( callback ) {
+                        function createUser(callback) {
                             var userData = {
                                 AccountId:      account.id,
                                 title:          data.title || null,
@@ -176,54 +176,54 @@ function define( Promise, Service, AccountModel, UserService, async, config, _, 
                                 hasAdminRight:  false
                             };
 
-                            if ( RoleService !== null && role ) {
+                            if (RoleService !== null && role) {
                                 userData.RoleId =  role;
                             }
 
                             UserService
-                                .create( userData, options )
-                                .then( function( _user ) {
+                                .create(userData, options)
+                                .then(function(_user) {
                                     user = _user;
-                                    callback( null );
+                                    callback(null);
                                 })
-                                .catch( callback );
+                                .catch(callback);
                         },
 
-                        function authenticateUser( callback ) {
-                            if ( config[ 'clever-accounts' ].emailConfirmation === true ) {
-                                options.transaction.commit().then( function() {
+                        function authenticateUser(callback) {
+                            if (config[ 'clever-accounts' ].emailConfirmation === true) {
+                                options.transaction.commit().then(function() {
                                     UserService
                                     .authenticate({
                                         email       : user.email,
                                         password    : user.password
-                                    }, options )
-                                    .then( function( _user ) {
+                                    }, options)
+                                    .then(function(_user) {
                                         user = _user;
-                                        callback( null );
+                                        callback(null);
                                     })
-                                    .catch( callback );
+                                    .catch(callback);
                                 });
                             } else {
-                                options.transaction.commit().done( callback.bind( null, null ) ).catch( callback );
+                                options.transaction.commit().done(callback.bind(null, null)).catch(callback);
                             }
                         }
                     ],
-                    function createComplete( err ) {
-                        if ( err === null || typeof err === 'undefined' ) {
-                            resolve( user );
+                    function createComplete(err) {
+                        if (err === null || typeof err === 'undefined') {
+                            resolve(user);
                         } else {
                             options
                             .transaction
                             .rollback()
-                            .done( function() {
-                                reject( err );
+                            .done(function() {
+                                reject(err);
                             })
-                            .catch( function( additionalErr ) {
-                                reject( additionalErr + ' was caused by ' + err );
+                            .catch(function(additionalErr) {
+                                reject(additionalErr + ' was caused by ' + err);
                             });
                         }
                     }
-                )
+               )
             });
         }
     });

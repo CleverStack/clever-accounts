@@ -1,26 +1,26 @@
-var injector    = require( 'injector' )
-  , packageJson = injector.getInstance( 'packageJson' );
+var injector    = require('injector')
+  , packageJson = injector.getInstance('packageJson');
 
-if ( packageJson.bundledDependencies.indexOf( 'clever-roles' ) !== -1 ) {
-    module.exports = function( Controller, AccountService, config, async, PermissionController ) {
-        return define( Controller, AccountService, config, async, PermissionController );
+if (packageJson.bundledDependencies.indexOf('clever-roles') !== -1) {
+    module.exports = function(Controller, AccountService, config, async, PermissionController) {
+        return define(Controller, AccountService, config, async, PermissionController);
     };
 } else {
-    module.exports = function( Controller, AccountService, config, async ) {
-        return define( Controller, AccountService, config, async, null );
+    module.exports = function(Controller, AccountService, config, async) {
+        return define(Controller, AccountService, config, async, null);
     };
 }
 
-function define( Controller, AccountService, config, async, PermissionController ) {
+function define(Controller, AccountService, config, async, PermissionController) {
     var autoRouting = [];
 
-    if ( PermissionController !== null ) {
+    if (PermissionController !== null) {
         autoRouting.push(
             PermissionController.requiresPermission({
                 all: 'Account.$action',
                 postAction: null
             })
-        );
+       );
     }
 
 
@@ -47,7 +47,7 @@ function define( Controller, AccountService, config, async, PermissionController
          * @param  {Function} next Continue past this middleware
          * @return {void}
          */
-        formatData: function( req, res, next ) {
+        formatData: function(req, res, next) {
             var accData = req.user.Account
               , newData = {
                     name:       req.body.name       || accData.name,
@@ -69,11 +69,11 @@ function define( Controller, AccountService, config, async, PermissionController
          * @param  {Function} next Continue past this middleware
          * @return {void}
          */
-        requiresUniqueSubdomain: function( req, res, next ){
+        requiresUniqueSubdomain: function(req, res, next){
             var subdomain = req.body.subdomain;
 
-            if ( !subdomain ) {
-                return res.json( 400, "Company subdomain is mandatory!" );
+            if (!subdomain) {
+                return res.json(400, "Company subdomain is mandatory!");
             }
 
             AccountService
@@ -82,29 +82,29 @@ function define( Controller, AccountService, config, async, PermissionController
                         subdomain: subdomain
                     }
                 })
-                .then( function( result ){
-                    if( result.length ){
-                        return res.json( 403, 'This URL "' + subdomain + '" is already taken' );
+                .then(function(result){
+                    if(result.length){
+                        return res.json(403, 'This URL "' + subdomain + '" is already taken');
                     }
                     next();
                 })
-                .catch( function(){
-                    return res.json( 500, 'There was an error: ' + err );
+                .catch(function(){
+                    return res.json(500, 'There was an error: ' + err);
                 });
         },
 
-        isValidEmailDomain : function( req, res, next ){
-            if ( !!config[ 'clever-subscription' ].account.enabled ) {
+        isValidEmailDomain : function(req, res, next){
+            if (!!config[ 'clever-subscription' ].account.enabled) {
                 var data = req.body
-                  , pattern = new RegExp( config[ 'clever-subscription' ].account.blockedEmailDomains );
+                  , pattern = new RegExp(config[ 'clever-subscription' ].account.blockedEmailDomains);
 
-                if( !data.email ){
-                    res.send(400, 'Email is mandatory' );
+                if(!data.email){
+                    res.send(400, 'Email is mandatory');
                     return;
                 }
 
-                if( pattern.test( data.email ) ){
-                    return res.send( 400, 'Please register with your corporate email address.' );
+                if(pattern.test(data.email)){
+                    return res.send(400, 'Please register with your corporate email address.');
                 }
 
                 next();
@@ -114,124 +114,124 @@ function define( Controller, AccountService, config, async, PermissionController
         },
 
         // Middleware
-        addAccountIdToRequest: function( requiredRoutes ) {
-            if ( typeof requiredRoutes !== 'object' ) {
+        addAccountIdToRequest: function(requiredRoutes) {
+            if (typeof requiredRoutes !== 'object') {
                 requiredRoutes = {
                     all: [ requiredRoutes !== undefined ? requiredRoutes : true ]
                 }
             }
 
-            return function( req, res, next ) {
+            return function(req, res, next) {
                 var method          = req.method.toLowerCase()
                   , user            = req.user
                   , isAdmin         = !!user ? !!user.hasAdminRight : false
                   , action          = req.params.action ? req.params.action.toLowerCase() : false
-                  , accountId       = ( method === 'post' ) ? req.body.AccountId : ( req.query.AccountId || parseInt( req.params.AccountId, 10 ) )
+                  , accountId       = (method === 'post') ? req.body.AccountId : (req.query.AccountId || parseInt(req.params.AccountId, 10))
                   , routeEnabled    = false;
 
-                if ( !req.query.AccountId && !!accountId ) {
+                if (!req.query.AccountId && !!accountId) {
                     req.query.AccountId = accountId;
                 }
 
-                if ( !action && method === 'get' && /^\/[^\/]+\/?$/ig.test( req.url ) ) {
+                if (!action && method === 'get' && /^\/[^\/]+\/?$/ig.test(req.url)) {
                     action = 'list';
-                } else if ( /^[0-9a-fA-F]{24}$/.test( action ) || !isNaN( action ) ) {
+                } else if (/^[0-9a-fA-F]{24}$/.test(action) || !isNaN(action)) {
                     action = 'get';
                 }
 
                 async.waterfall(
                     [
-                        function isRouteEnabled( callback ) {
-                            var actionName = ( !!action ? action : method ) + 'Action';
+                        function isRouteEnabled(callback) {
+                            var actionName = (!!action ? action : method) + 'Action';
 
-                            if ( typeof requiredRoutes[ actionName ] !== 'undefined' ) {
-                                if ( requiredRoutes[ actionName ] !== null ) {
-                                    if ( requiredRoutes[ actionName ] === true ) {
+                            if (typeof requiredRoutes[ actionName ] !== 'undefined') {
+                                if (requiredRoutes[ actionName ] !== null) {
+                                    if (requiredRoutes[ actionName ] === true) {
                                         routeEnabled = true;
                                     }
                                 }
-                            } else if ( typeof requiredRoutes.all !== 'undefined' ) {
-                                if ( requiredRoutes.all === true ) {
+                            } else if (typeof requiredRoutes.all !== 'undefined') {
+                                if (requiredRoutes.all === true) {
                                     routeEnabled = true;
                                 }
                             }
 
-                            callback( null );
+                            callback(null);
                         },
 
-                        function addAccountIdToRequest( callback ) {
-                            if ( routeEnabled === true ) {
+                        function addAccountIdToRequest(callback) {
+                            if (routeEnabled === true) {
 
-                                if ( !user ) {
+                                if (!user) {
                                     
-                                    callback( 'Unknown user' );
+                                    callback('Unknown user');
 
                                 } else {
 
-                                    if ( method === 'post' || method === 'put' ) {
-                                        if ( !isAdmin || ( !!isAdmin && !accountId ) ) {
-                                            req.body[ !/^[0-9a-fA-F]{24}$/.test( user.Account.id ) ? 'AccountId' : 'Account' ]  = user.Account.id || user.Account._id;
+                                    if (method === 'post' || method === 'put') {
+                                        if (!isAdmin || (!!isAdmin && !accountId)) {
+                                            req.body[ !/^[0-9a-fA-F]{24}$/.test(user.Account.id) ? 'AccountId' : 'Account' ]  = user.Account.id || user.Account._id;
                                         }
                                     } else {
-                                        if ( !isAdmin || ( !!isAdmin && !accountId ) ) {
-                                            req.query[ !/^[0-9a-fA-F]{24}$/.test( user.Account.id ) ? 'AccountId' : 'Account' ] = user.Account.id || user.Account._id;
+                                        if (!isAdmin || (!!isAdmin && !accountId)) {
+                                            req.query[ !/^[0-9a-fA-F]{24}$/.test(user.Account.id) ? 'AccountId' : 'Account' ] = user.Account.id || user.Account._id;
                                         }
                                     }
 
-                                    callback( null );
+                                    callback(null);
                                 }
 
                             } else {
-                                callback( null );
+                                callback(null);
                             }
                         }   
                     ],
-                    function( err ) {
-                        if ( err === null ) {
+                    function(err) {
+                        if (err === null) {
                             next();
                         } else {
-                            res.send( 401, { statusCode: 401, message: err } );
+                            res.send(401, { statusCode: 401, message: err });
                         }
                     }
 
-                );
+               );
             };
         }
     },
     /** @Prototype **/
     {
         listAction: function() {
-            if ( this.req.query.AccountId !== undefined && this.req.query.AccountId != this.req.user.Account.id ) {
-                return this.send( 200, [] );
+            if (this.req.query.AccountId !== undefined && this.req.query.AccountId != this.req.user.Account.id) {
+                return this.send(200, []);
             }
-            if ( !this.req.user || !this.req.user.hasAdminRight ) {
+            if (!this.req.user || !this.req.user.hasAdminRight) {
                 this.req.query.id = this.req.user.Account.id;
             }
-            this._super.apply( this, arguments );
+            this._super.apply(this, arguments);
         },
 
         getAction: function() {
-            if ( this.req.query.AccountId !== undefined && this.req.query.AccountId != this.req.user.Account.id ) {
+            if (this.req.query.AccountId !== undefined && this.req.query.AccountId != this.req.user.Account.id) {
                 return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model._name + " doesn't exist." })
             }
             this.req.query.id = this.req.user.Account.id;
-            this._super.apply( this, arguments );
+            this._super.apply(this, arguments);
         },
 
         putAction: function() {
-            if ( this.req.query.AccountId !== undefined && this.req.query.AccountId != this.req.user.Account.id ) {
+            if (this.req.query.AccountId !== undefined && this.req.query.AccountId != this.req.user.Account.id) {
                 return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model._name + " doesn't exist." })
             }
             this.req.query.id = this.req.user.Account.id;
-            this._super.apply( this, arguments );
+            this._super.apply(this, arguments);
         },
 
         deleteAction: function() {
-            if ( this.req.query.AccountId !== undefined && this.req.query.AccountId != this.req.user.Account.id ) {
+            if (this.req.query.AccountId !== undefined && this.req.query.AccountId != this.req.user.Account.id) {
                 return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model._name + " doesn't exist." })
             }
             this.req.query.id = this.req.user.Account.id;
-            this._super.apply( this, arguments );
+            this._super.apply(this, arguments);
         }
     });
 

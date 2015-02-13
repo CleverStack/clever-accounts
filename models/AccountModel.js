@@ -1,7 +1,7 @@
-module.exports = function( Model, config ) {
-    return Model.extend( 'Account',
+module.exports = function(Model, config) {
+    return Model.extend('Account',
     {
-        type:               config[ 'clever-auth' ].driver || 'ORM',
+        type:               config['clever-auth'].driver || 'ORM',
         softDeletable:      true,
         timeStampable:      true
     },
