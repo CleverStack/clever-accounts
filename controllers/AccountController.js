@@ -212,7 +212,7 @@ function define(Controller, AccountService, config, async, PermissionController)
 
         getAction: function() {
             if (this.req.query.AccountId !== undefined && this.req.query.AccountId != this.req.user.Account.id) {
-                return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model._name + " doesn't exist." })
+                return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model.modelName + " doesn't exist." })
             }
             this.req.query.id = this.req.user.Account.id;
             this._super.apply(this, arguments);
@@ -220,7 +220,7 @@ function define(Controller, AccountService, config, async, PermissionController)
 
         putAction: function() {
             if (this.req.query.AccountId !== undefined && this.req.query.AccountId != this.req.user.Account.id) {
-                return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model._name + " doesn't exist." })
+                return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model.modelName + " doesn't exist." })
             }
             this.req.query.id = this.req.user.Account.id;
             this._super.apply(this, arguments);
@@ -228,7 +228,7 @@ function define(Controller, AccountService, config, async, PermissionController)
 
         deleteAction: function() {
             if (this.req.query.AccountId !== undefined && this.req.query.AccountId != this.req.user.Account.id) {
-                return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model._name + " doesn't exist." })
+                return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model.modelName + " doesn't exist." })
             }
             this.req.query.id = this.req.user.Account.id;
             this._super.apply(this, arguments);

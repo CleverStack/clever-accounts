@@ -3,9 +3,9 @@ module.exports  = require('classes').Module.extend({
         UserModel.on('beforeAllFindersOptions', function(findOptions, queryOptions, callback) {
             findOptions.include = findOptions.include || [];
 
-            if (!_.findWhere(findOptions.include, { model: AccountModel._model })) {
+            if (!_.findWhere(findOptions.include, { model: AccountModel.entity })) {
                 findOptions.include.push({
-                    model : AccountModel._model
+                    model : AccountModel.entity
                 });
             }
 
