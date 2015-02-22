@@ -1,7 +1,7 @@
 {
   "name":         "clever-accounts",
   "description":  "CleverStack Accounts Module",
-  "version":      "1.0.4",
+  "version":      "1.0.5",
   "main":         "module.js",
   "author": {
     "name":     "CleverStack",
