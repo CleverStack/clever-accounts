@@ -1,37 +1,37 @@
 module.exports = function(Model, config) {
-    return Model.extend('Account',
-    {
-        type:               config['clever-auth'].driver || 'ORM',
-        softDeletable:      true,
-        timeStampable:      true
+  return Model.extend('Account',
+  {
+    type:               config['clever-auth'].driver || 'ORM',
+    softDeletable:      true,
+    timeStampable:      true
+  },
+  {
+    id: {
+      type:           Number,
+      primaryKey:     true,
+      autoIncrement:  true
     },
-    {
-        id: {
-            type:           Number,
-            primaryKey:     true,
-            autoIncrement:  true
-        },
-        name: {
-            type:           String,
-            default:        null
-        },
-        email: {
-            type:           String,
-            required:       true,
-            validate: {
-                isEmail:    true
-            }
-        },
-        active: {
-            type:           Boolean,
-            allowNull:      false,
-            defaultValue:   false
-        },
-        subDomain: {
-            type:           String,
-            length:         191,
-            required:       true,
-            unique:         true
-        }
-    });
+    name: {
+      type:           String,
+      default:        null
+    },
+    email: {
+      type:           String,
+      required:       true,
+      validate: {
+        isEmail:    true
+      }
+    },
+    active: {
+      type:           Boolean,
+      allowNull:      false,
+      defaultValue:   false
+    },
+    subDomain: {
+      type:           String,
+      length:         191,
+      required:       true,
+      unique:         true
+    }
+  });
 };

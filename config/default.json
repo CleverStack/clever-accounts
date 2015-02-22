@@ -1,20 +1,20 @@
 {
-    "clever-accounts": {
-        "driver": "ORM",
+  "clever-accounts": {
+    "driver": "ORM",
 
-        "emailConfirmation" : false,
+    "emailConfirmation" : false,
 
-        "modelAssociations": {
-            "Account": {
-                "hasMany": [
-                    "User"
-                ]
-            },
-            "User": {
-                "belongsTo": [
-                    "Account"
-                ]
-            }
-        }
+    "modelAssociations": {
+      "Account": {
+        "hasMany": [
+          "User"
+        ]
+      },
+      "User": {
+        "belongsTo": [
+          "Account"
+        ]
+      }
     }
+  }
 }

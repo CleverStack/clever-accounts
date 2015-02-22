@@ -1,48 +1,48 @@
 {
-    "name":         "clever-accounts",
-    "description":  "CleverStack Accounts Module",
-    "version":      "1.0.4",
-    "main":         "module.js",
-    "author": {
-        "name":     "CleverStack",
-        "email":    "admin@cleverstack.io",
-        "web":      "http://cleverstack.io"
-    },
-    "collaborators": [
-        "Richard Gustin <richard.gustin86@gmail.com>"
-    ],
-    "repository": {
-        "type":     "git",
-        "url":      "https://github.com/CleverStack/clever-accounts.git"
-    },
-    "bugs": {
-        "url":      "https://github.com/CleverStack/clever-accounts/issues"
-    },
-    "keywords": [
-        "cleverstack",
-        "cleverstack-module",
-        "cleverstack-backend",
-        "account",
-        "accounts",
-        "saas",
-        "paas",
-        "passport",
-        "auth",
-        "node-accounts",
-        "resource-account"
-    ],
-    "license":      "BSD-2-Clause",
-    "dependencies": {
+  "name":         "clever-accounts",
+  "description":  "CleverStack Accounts Module",
+  "version":      "1.0.4",
+  "main":         "module.js",
+  "author": {
+    "name":     "CleverStack",
+    "email":    "admin@cleverstack.io",
+    "web":      "http://cleverstack.io"
+  },
+  "collaborators": [
+    "Richard Gustin <richard.gustin86@gmail.com>"
+  ],
+  "repository": {
+    "type":     "git",
+    "url":      "https://github.com/CleverStack/clever-accounts.git"
+  },
+  "bugs": {
+    "url":      "https://github.com/CleverStack/clever-accounts/issues"
+  },
+  "keywords": [
+    "cleverstack",
+    "cleverstack-module",
+    "cleverstack-backend",
+    "account",
+    "accounts",
+    "saas",
+    "paas",
+    "passport",
+    "auth",
+    "node-accounts",
+    "resource-account"
+  ],
+  "license":      "BSD-2-Clause",
+  "dependencies": {
 
-    },
-    "devDependencies": {
-        "grunt":        "~0.4.2",
-        "grunt-prompt": "~1.3.0"
-    },
-    "scripts": {
-        "test":     "grunt test:unit"
-    },
-    "bundledDependencies": [
-        "clever-roles"
-    ]
+  },
+  "devDependencies": {
+    "grunt":        "~0.4.2",
+    "grunt-prompt": "~1.3.0"
+  },
+  "scripts": {
+    "test":     "grunt test:unit"
+  },
+  "bundledDependencies": [
+    "clever-roles"
+  ]
 }
