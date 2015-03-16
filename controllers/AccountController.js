@@ -1,28 +1,14 @@
-var injector    = require('injector')
-  , packageJson = injector.getInstance('packageJson');
-
-if (packageJson.bundledDependencies.indexOf('clever-roles') !== -1) {
-  module.exports = function(Controller, AccountService, config, async, PermissionController) {
-    return define(Controller, AccountService, config, async, PermissionController);
-  };
-} else {
-  module.exports = function(Controller, AccountService, config, async) {
-    return define(Controller, AccountService, config, async, null);
-  };
-}
-
-function define(Controller, AccountService, config, async, PermissionController) {
+module.exports = function(Controller, AccountService, config, async, $PermissionController) {
   var autoRouting = [];
 
-  if (PermissionController !== null) {
+  if ($PermissionController !== null) {
     autoRouting.push(
-      PermissionController.requiresPermission({
+      $PermissionController.requiresPermission({
         all: 'Account.$action',
         postAction: null
       })
-     );
+    );
   }
-
 
   var AccountController = Controller.extend(
   /** @Class **/
@@ -73,7 +59,7 @@ function define(Controller, AccountService, config, async, PermissionController)
       var subdomain = req.body.subdomain;
 
       if (!subdomain) {
-        return res.json(400, "Company subdomain is mandatory!");
+        return res.json(400, 'Company subdomain is mandatory!');
       }
 
       AccountService
@@ -88,7 +74,7 @@ function define(Controller, AccountService, config, async, PermissionController)
           }
           next();
         })
-        .catch(function(){
+        .catch(function(err){
           return res.json(500, 'There was an error: ' + err);
         });
     },
@@ -118,7 +104,7 @@ function define(Controller, AccountService, config, async, PermissionController)
       if (typeof requiredRoutes !== 'object') {
         requiredRoutes = {
           all: [ requiredRoutes !== undefined ? requiredRoutes : true ]
-        }
+        };
       }
 
       return function(req, res, next) {
@@ -184,7 +170,7 @@ function define(Controller, AccountService, config, async, PermissionController)
               } else {
                 callback(null);
               }
-            }   
+            }
           ],
           function(err) {
             if (err === null) {
@@ -201,7 +187,7 @@ function define(Controller, AccountService, config, async, PermissionController)
   /** @Prototype **/
   {
     listAction: function() {
-      if (this.req.query.AccountId !== undefined && this.req.query.AccountId != this.req.user.Account.id) {
+      if (this.req.query.AccountId !== undefined && this.req.query.AccountId !== this.req.user.Account.id) {
         return this.send(200, []);
       }
       if (!this.req.user || !this.req.user.hasAdminRight) {
@@ -211,24 +197,24 @@ function define(Controller, AccountService, config, async, PermissionController)
     },
 
     getAction: function() {
-      if (this.req.query.AccountId !== undefined && this.req.query.AccountId != this.req.user.Account.id) {
-        return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model.modelName + " doesn't exist." })
+      if (this.req.query.AccountId !== undefined && this.req.query.AccountId !== this.req.user.Account.id) {
+        return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model.modelName + ' doesn\'t exist.' });
       }
       this.req.query.id = this.req.user.Account.id;
       this._super.apply(this, arguments);
     },
 
     putAction: function() {
-      if (this.req.query.AccountId !== undefined && this.req.query.AccountId != this.req.user.Account.id) {
-        return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model.modelName + " doesn't exist." })
+      if (this.req.query.AccountId !== undefined && this.req.query.AccountId !== this.req.user.Account.id) {
+        return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model.modelName + ' doesn\'t exist.' });
       }
       this.req.query.id = this.req.user.Account.id;
       this._super.apply(this, arguments);
     },
 
     deleteAction: function() {
-      if (this.req.query.AccountId !== undefined && this.req.query.AccountId != this.req.user.Account.id) {
-        return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model.modelName + " doesn't exist." })
+      if (this.req.query.AccountId !== undefined && this.req.query.AccountId !== this.req.user.Account.id) {
+        return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model.modelName + ' doesn\'t exist.' });
       }
       this.req.query.id = this.req.user.Account.id;
       this._super.apply(this, arguments);
@@ -236,4 +222,4 @@ function define(Controller, AccountService, config, async, PermissionController)
   });
 
   return AccountController;
-}
+};
