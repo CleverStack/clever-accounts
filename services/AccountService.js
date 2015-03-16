@@ -1,17 +1,4 @@
-var injector                = require('injector')
-  , packageJson             = injector.getInstance('packageJson');
-
-if (packageJson.bundledDependencies.indexOf('clever-roles') !== -1) {
-  module.exports = function(Promise, Service, AccountModel, UserService, async, config, _, PermissionService, RoleService) {
-    return define(Promise, Service, AccountModel, UserService, async, config, _, PermissionService, RoleService);
-  };
-} else {
-  module.exports = function(Promise, Service, AccountModel, UserService, async, config, _) {
-    return define(Promise, Service, AccountModel, UserService, async, config, _, null, null);
-  };
-}
-
-function define(Promise, Service, AccountModel, UserService, async, config, _, PermissionService, RoleService) {
+module.exports  = function(Promise, Service, AccountModel, UserService, async, config, _, $PermissionService, $RoleService) {
   return Service.extend({
 
     model: AccountModel,
@@ -42,7 +29,7 @@ function define(Promise, Service, AccountModel, UserService, async, config, _, P
               var accountData = {
                 name:       data.company,
                 email:      data.email,
-                active:     RoleService !== null ? (!config[ 'clever-roles' ].account.requireConfirmation ? true : false) : true
+                active:     $RoleService !== null ? (!config[ 'clever-roles' ].account.requireConfirmation ? true : false) : true
               };
 
               if (data.subDomain) {
@@ -57,12 +44,12 @@ function define(Promise, Service, AccountModel, UserService, async, config, _, P
                   account = _account;
                   callback(null);
                 })
-                .catch(callback)
+                .catch(callback);
             },
 
             function findDefaultPermissions(callback) {
-              if (PermissionService !== null) {
-                PermissionService
+              if ($PermissionService !== null) {
+                $PermissionService
                   .findAll({
                     where: {
                       AccountId: null,
@@ -77,11 +64,11 @@ function define(Promise, Service, AccountModel, UserService, async, config, _, P
             },
 
             function createDefaultPermissions(defaultPermissions, callback) {
-              if (PermissionService !== null) {
+              if ($PermissionService !== null) {
                 async.forEach(
                   defaultPermissions,
                   function createDefaultPermission(defaultPermission, done) {
-                    PermissionService
+                    $PermissionService
                       .create({
                         AccountId:          account.id,
                         action:             defaultPermission.action,
@@ -102,8 +89,8 @@ function define(Promise, Service, AccountModel, UserService, async, config, _, P
             },
 
             function findDefaultRoles(callback) {
-              if (RoleService !== null) {
-                RoleService
+              if ($RoleService !== null) {
+                $RoleService
                   .findAll({
                     where: {
                       AccountId:  null,
@@ -118,7 +105,7 @@ function define(Promise, Service, AccountModel, UserService, async, config, _, P
             },
 
             function createDefaultRoles(defaultRoles, callback) {
-              if (RoleService !== null) {
+              if ($RoleService !== null) {
                 async.forEach(
                   defaultRoles,
                   function createDefaultRole(defaultRole, done) {
@@ -130,10 +117,10 @@ function define(Promise, Service, AccountModel, UserService, async, config, _, P
                         if (defaultPermission) {
                           rolePermissions.push(defaultPermission.id);
                         }
-                      })
+                      });
                     }
 
-                    RoleService
+                    $RoleService
                       .create({
                         AccountId:      account.id,
                         systemRole:     true,
@@ -176,7 +163,7 @@ function define(Promise, Service, AccountModel, UserService, async, config, _, P
                 hasAdminRight:  false
               };
 
-              if (RoleService !== null && role) {
+              if ($RoleService !== null && role) {
                 userData.RoleId =  role;
               }
 
@@ -223,8 +210,8 @@ function define(Promise, Service, AccountModel, UserService, async, config, _, P
               });
             }
           }
-         )
+         );
       });
     }
   });
-}
+};
