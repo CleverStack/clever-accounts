@@ -1,4 +1,6 @@
-module.exports  = require('classes').Module.extend({
+var Module         = require('classes').Module;
+
+var CleverAccounts = Module.extend({
   preRoute: function(UserModel, AccountModel, _) {
     UserModel.on('beforeAllFindersOptions', function(findOptions, queryOptions, callback) {
       findOptions.include = findOptions.include || [];
@@ -13,3 +15,5 @@ module.exports  = require('classes').Module.extend({
     });
   }
 });
+
+module.exports = CleverAccounts;

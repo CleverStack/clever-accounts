@@ -1,37 +1,37 @@
 module.exports = function(Model, config) {
   return Model.extend('Account',
   {
-    type:               config['clever-accounts'].driver || 'ORM',
-    softDeletable:      true,
-    timeStampable:      true
+    type              : config['clever-accounts'].driver || 'ORM',
+    softDeletable     : true,
+    timeStampable     : true
   },
   {
     id: {
-      type:           Number,
-      primaryKey:     true,
-      autoIncrement:  true
+      type            : Number,
+      primaryKey      : true,
+      autoIncrement   : true
     },
     name: {
-      type:           String,
-      default:        null
+      type            : String,
+      default         : null
     },
     email: {
-      type:           String,
-      required:       true,
-      validate: {
-        isEmail:    true
+      type            : String,
+      required        : true,
+      validate        : {
+        isEmail       : true
       }
     },
     active: {
-      type:           Boolean,
-      allowNull:      false,
-      defaultValue:   false
+      type            : Boolean,
+      allowNull       : false,
+      defaultValue    : false
     },
     subDomain: {
-      type:           String,
-      length:         191,
-      required:       true,
-      unique:         true
+      type            : String,
+      length          : 191,
+      required        : true,
+      unique          : true
     }
   });
 };
