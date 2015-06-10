@@ -1,217 +1,69 @@
-module.exports  = function(Promise, Service, AccountModel, UserService, async, config, _, $PermissionService, $RoleService) {
+module.exports = function(Promise, Service, AccountModel, config, UserService, _) {
   return Service.extend({
 
     model: AccountModel,
 
-    create: function(data, options) {
-      var create      = this._super
-        , service     = this
-        , account     = null
-        , permissions = []
-        , role        = null
-        , user        = null;
+    create: function(values, queryOptions) {
+      var createAccount = this._super;
 
-      options = options || {};
+      queryOptions  = queryOptions || {};
+
+      values.name   = values.firstName + ' ' + values.lastName;
+      values.active = !config[ 'clever-accounts' ].requireConfirmation ? true : false;
+
+      if (values.subDomain) {
+        values.subDomain = values.subDomain;
+      } else if (values.domain) {
+        values.subDomain = values.domain.replace('http://', '').replace('www.', '').split('.')[0];
+      }
 
       return new Promise(function(resolve, reject) {
-        async.waterfall(
-          [
-            function startTransaction(callback) {
-              service
-                .transaction(options)
-                .then(function() {
-                  callback(null);
-                })
-                .catch(callback);
-            },
+        var account;
 
-            function createAccount(callback) {
-              var accountData = {
-                name:       data.company,
-                email:      data.email,
-                active:     $RoleService !== null ? (!config[ 'clever-roles' ].account.requireConfirmation ? true : false) : true
-              };
+        this
+          .transaction(queryOptions)
+          .then(this.callback(function() {
+            return createAccount.apply(this, [values, queryOptions]);
+          }))
+          .then(function(_account) {
+            account = _account
+            var userData = _.extend({}, {
+              AccountId     : account.id,
+              title         : values.title || null,
+              firstName     : values.firstName,
+              lastName      : values.lastName,
+              email         : values.email,
+              username      : values.username || values.email,
+              password      : values.password,
+              phone         : values.phone || null,
 
-              if (data.subDomain) {
-                accountData.subDomain = data.subDomain;
-              } else if (data.domain) {
-                accountData.subDomain = data.domain.replace('http://', '').replace('www.', '').split('.')[ 0 ];
-              }
+              active        : true,
+              confirmed     : config['clever-accounts'].emailConfirmation === true ? false : true,
 
-              create
-                .apply(service, [ accountData, options ])
-                .then(function(_account) {
-                  account = _account;
-                  callback(null);
-                })
-                .catch(callback);
-            },
+              hasAdminRight : false
+            });
 
-            function findDefaultPermissions(callback) {
-              if ($PermissionService !== null) {
-                $PermissionService
-                  .findAll({
-                    where: {
-                      AccountId: null,
-                      systemPermission: true
-                    }
-                  }, options)
-                  .then(callback.bind(null, null))
-                  .catch(callback);
-              } else {
-                callback(null, null);
-              }
-            },
-
-            function createDefaultPermissions(defaultPermissions, callback) {
-              if ($PermissionService !== null) {
-                async.forEach(
-                  defaultPermissions,
-                  function createDefaultPermission(defaultPermission, done) {
-                    $PermissionService
-                      .create({
-                        AccountId:          account.id,
-                        action:             defaultPermission.action,
-                        description:        defaultPermission.description,
-                        systemPermission:   true
-                      }, options)
-                      .then(function(permission) {
-                        permissions.push(permission);
-                        done(null);
-                      })
-                      .catch(done);
-                  },
-                  callback
-                 );
-              } else {
-                callback(null);
-              }
-            },
-
-            function findDefaultRoles(callback) {
-              if ($RoleService !== null) {
-                $RoleService
-                  .findAll({
-                    where: {
-                      AccountId:  null,
-                      systemRole: true
-                    }
-                  }, options)
-                  .then(callback.bind(null, null))
-                  .catch(callback);
-              } else {
-                callback(null, null);
-              }
-            },
-
-            function createDefaultRoles(defaultRoles, callback) {
-              if ($RoleService !== null) {
-                async.forEach(
-                  defaultRoles,
-                  function createDefaultRole(defaultRole, done) {
-                    var rolePermissions = [];
-
-                    if (defaultRole.Permissions) {
-                      defaultRole.Permissions.forEach(function(rolePermission) {
-                        var defaultPermission = _.findWhere(permissions, { action: rolePermission.action });
-                        if (defaultPermission) {
-                          rolePermissions.push(defaultPermission.id);
-                        }
-                      });
-                    }
-
-                    $RoleService
-                      .create({
-                        AccountId:      account.id,
-                        systemRole:     true,
-                        name:           defaultRole.name,
-                        description:    defaultRole.description,
-                        Permissions:    rolePermissions
-                      }, options)
-                      .then(function(_role) {
-                        // For now we get the first role and assign the user to that role
-                        if (role === null) {
-                          role = _role;
-                        }
-                        done(null);
-                      })
-                      .catch(done);
-                  },
-                  callback
-                 );
-              } else {
-                callback(null);
-              }
-            },
-
-            function createUser(callback) {
-              var userData = {
-                AccountId:      account.id,
-                title:          data.title || null,
-                firstname:      data.firstname,
-                lastname:       data.lastname,
-                email:          data.email,
-                username:       data.username || data.email,
-                password:       data.password,
-                phone:          data.phone || null,
-                
-                // Implement user options!
-                active:         true,
-                confirmed:      config[ 'clever-accounts' ].emailConfirmation === true ? false : true,
-
-                // Is this actually needed?
-                hasAdminRight:  false
-              };
-
-              if ($RoleService !== null && role) {
-                userData.RoleId =  role;
-              }
-
-              UserService
-                .create(userData, options)
-                .then(function(_user) {
-                  user = _user;
-                  callback(null);
-                })
-                .catch(callback);
-            },
-
-            function authenticateUser(callback) {
-              if (config[ 'clever-accounts' ].emailConfirmation === true) {
-                options.transaction.commit().then(function() {
-                  UserService
-                  .authenticate({
-                    email       : user.email,
-                    password    : user.password
-                  }, options)
-                  .then(function(_user) {
-                    user = _user;
-                    callback(null);
-                  })
-                  .catch(callback);
-                });
-              } else {
-                options.transaction.commit().done(callback.bind(null, null)).catch(callback);
-              }
+            if (account.Roles && account.Roles.length) {
+              userData.Role = account.Roles[0];
             }
-          ],
-          function createComplete(err) {
-            if (err === null || typeof err === 'undefined') {
-              resolve(user);
-            } else {
-              options
+
+            return UserService.create(userData, queryOptions);
+          })
+          .then(function(user) {
+            return queryOptions.transaction.commit();
+          })
+          .then(function() {
+            resolve(account);
+          })
+          .catch(function(err) {
+            queryOptions
               .transaction
               .rollback()
-              .done(function() {
-                reject(err);
-              })
-              .catch(function(additionalErr) {
-                reject(additionalErr + ' was caused by ' + err);
-              });
-            }
-          }
-         );
-      });
+              .then(reject.bind(null, err))
+              .catch(reject);
+          });
+      }
+      .bind(this));
     }
   });
 };
