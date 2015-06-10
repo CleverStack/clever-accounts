@@ -193,7 +193,7 @@ module.exports = function(Controller, AccountService, config, async, $Permission
       if (!this.req.user || !this.req.user.hasAdminRight) {
         this.req.query.id = this.req.user.Account.id;
       }
-      this._super.apply(this, arguments);
+      return this._super.apply(this, arguments);
     },
 
     getAction: function() {
@@ -201,7 +201,7 @@ module.exports = function(Controller, AccountService, config, async, $Permission
         return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model.modelName + ' doesn\'t exist.' });
       }
       this.req.query.id = this.req.user.Account.id;
-      this._super.apply(this, arguments);
+      return this._super.apply(this, arguments);
     },
 
     putAction: function() {
@@ -209,7 +209,7 @@ module.exports = function(Controller, AccountService, config, async, $Permission
         return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model.modelName + ' doesn\'t exist.' });
       }
       this.req.query.id = this.req.user.Account.id;
-      this._super.apply(this, arguments);
+      return this._super.apply(this, arguments);
     },
 
     deleteAction: function() {
@@ -217,7 +217,7 @@ module.exports = function(Controller, AccountService, config, async, $Permission
         return this.handleServiceMessage({ statuscode: 400, message: this.Class.service.model.modelName + ' doesn\'t exist.' });
       }
       this.req.query.id = this.req.user.Account.id;
-      this._super.apply(this, arguments);
+      return this._super.apply(this, arguments);
     }
   });
 
