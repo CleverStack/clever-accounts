@@ -1,9 +1,17 @@
-module.exports = function(Model, config) {
+module.exports = function(Model, config, utils, UserModel) {
   return Model.extend('Account',
   {
     type              : config['clever-accounts'].driver || 'ORM',
-    softDeletable     : true,
-    timeStampable     : true
+    timeStampable     : true,
+    softDeleteable    : false,
+
+    'UserModel beforeAllFindersOptions': function(findOptions, queryOptions, callback) {
+      utils
+        .helpers
+        .includeModel(findOptions, this, 'Account');
+
+      callback(null);
+    }
   },
   {
     id: {
