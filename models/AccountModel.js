@@ -33,7 +33,7 @@ module.exports = function(Model, config, utils, UserModel) {
     active: {
       type            : Boolean,
       allowNull       : false,
-      defaultValue    : false
+      default         : '0'
     },
     subDomain: {
       type            : String,
