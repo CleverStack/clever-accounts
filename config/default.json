@@ -2,17 +2,17 @@
   "clever-accounts": {
     "driver": "ORM",
 
-    "emailConfirmation" : false,
+    "emailConfirmation" : true,
 
     "modelAssociations": {
       "Account": {
         "hasMany": [
-          "User"
+          ["User", {"as": "Users"}]
         ]
       },
       "User": {
         "belongsTo": [
-          "Account"
+          ["Account", {"as": "Account"}]
         ]
       }
     }
