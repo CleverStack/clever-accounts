@@ -10,8 +10,92 @@
       }
     }
   ],
+
+  "RoleModel": [
+    {
+      "AccountId":        1,
+      "systemRole":       true,
+      "name":             "Admin",
+      "description":      "Default (System) Administration Role, this gives any user (assigned this role) privileges to everything.",
+      "associations": {
+        "UserModel": [
+          { "username": "default" }
+        ],
+        "AccountModel": [
+          { "name": "Default Account" }
+        ],
+        "PermissionModel": [
+          { "action": "Account.list",             "AccountId": 1 },
+          { "action": "Account.view",             "AccountId": 1 },
+          { "action": "Account.create",           "AccountId": 1 },
+          { "action": "Account.edit",             "AccountId": 1 },
+          { "action": "Account.delete",           "AccountId": 1 },
+          { "action": "User.list",                "AccountId": 1 },
+          { "action": "User.view",                "AccountId": 1 },
+          { "action": "User.create",              "AccountId": 1 },
+          { "action": "User.edit",                "AccountId": 1 },
+          { "action": "User.delete",              "AccountId": 1 },
+          { "action": "User.assignRole",          "AccountId": 1 },
+          { "action": "Role.list",                "AccountId": 1 },
+          { "action": "Role.view",                "AccountId": 1 },
+          { "action": "Role.create",              "AccountId": 1 },
+          { "action": "Role.edit",                "AccountId": 1 },
+          { "action": "Role.delete",              "AccountId": 1 },
+          { "action": "Permission.list",          "AccountId": 1 },
+          { "action": "Permission.view",          "AccountId": 1 },
+          { "action": "Permission.create",        "AccountId": 1 },
+          { "action": "Permission.edit",          "AccountId": 1 },
+          { "action": "Permission.delete",        "AccountId": 1 },
+          { "action": "Payment.list",             "AccountId": 1 },
+          { "action": "Payment.view",             "AccountId": 1 },
+          { "action": "Payment.create",           "AccountId": 1 },
+          { "action": "Payment.edit",             "AccountId": 1 },
+          { "action": "Payment.delete",           "AccountId": 1 },
+          { "action": "Invoice.list",             "AccountId": 1 },
+          { "action": "Invoice.view",             "AccountId": 1 },
+          { "action": "Invoice.create",           "AccountId": 1 },
+          { "action": "Invoice.edit",             "AccountId": 1 },
+          { "action": "Invoice.delete",           "AccountId": 1 },
+          { "action": "Permission.assignRole",    "AccountId": 1 },
+          { "action": "Response.list",            "AccountId": 1 },
+          { "action": "Response.view",            "AccountId": 1 },
+          { "action": "Response.create",          "AccountId": 1 },
+          { "action": "Response.edit",            "AccountId": 1 },
+          { "action": "Response.delete",          "AccountId": 1 },
+          { "action": "Response.assignRole",      "AccountId": 1 },
+          { "action": "Site.list",                "AccountId": 1 },
+          { "action": "Site.view",                "AccountId": 1 },
+          { "action": "Site.create",              "AccountId": 1 },
+          { "action": "Site.edit",                "AccountId": 1 },
+          { "action": "Site.delete",              "AccountId": 1 },
+          { "action": "Charm.list",               "AccountId": 1 },
+          { "action": "Charm.view",               "AccountId": 1 },
+          { "action": "Charm.create",             "AccountId": 1 },
+          { "action": "Charm.edit",               "AccountId": 1 },
+          { "action": "Charm.delete",             "AccountId": 1 },
+          { "action": "Subscription.list",        "AccountId": 1 },
+          { "action": "Subscription.view",        "AccountId": 1 },
+          { "action": "Subscription.create",      "AccountId": 1 },
+          { "action": "Subscription.edit",        "AccountId": 1 },
+          { "action": "Subscription.delete",      "AccountId": 1 },
+          { "action": "Page.list",                "AccountId": 1 },
+          { "action": "Page.view",                "AccountId": 1 },
+          { "action": "Page.create",              "AccountId": 1 },
+          { "action": "Page.edit",                "AccountId": 1 },
+          { "action": "Page.delete",              "AccountId": 1 },
+          { "action": "Plan.list",                "AccountId": 1 },
+          { "action": "Plan.view",                "AccountId": 1 },
+          { "action": "Plan.create",              "AccountId": 1 },
+          { "action": "Plan.edit",                "AccountId": 1 },
+          { "action": "Plan.delete",              "AccountId": 1 }
+        ]
+      }
+    }
+  ],
+
   "PermissionModel": [
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Account.list",
       "description":      "Allows the user to list their account/s.",
@@ -20,6 +104,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Account.view",
       "description":      "Allows the user to view details about their account/s.",
@@ -28,6 +113,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Account.create",
       "description":      "Allows the user to create a new account/s.",
@@ -36,6 +122,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Account.edit",
       "description":      "Allows the user to update their account/s.",
@@ -44,6 +131,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Account.delete",
       "description":      "Allows the user to delete their account/s.",
@@ -52,6 +140,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "User.list",
       "description":      "Allows the user to view a list of user/s within their account/s.",
@@ -60,6 +149,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "User.view",
       "description":      "Allows the user to view details about any user/s within their account/s.",
@@ -68,6 +158,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "User.create",
       "description":      "Allows the user to create a new user for any of their account/s.",
@@ -76,6 +167,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "User.edit",
       "description":      "Allows the user to update any user/s within their account/s.",
@@ -84,6 +176,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "User.delete",
       "description":      "Allows the user to delete any user/s within their account/s.",
@@ -92,6 +185,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "User.assignRole",
       "description":      "Allows the user to assign any user/s within their account to any role/s within their account/s.",
@@ -100,6 +194,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Permission.list",
       "description":      "Allows the user to view a list of permission/s within their account/s.",
@@ -108,6 +203,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Permission.view",
       "description":      "Allows the user to view details about any permission/s within their account/s.",
@@ -116,6 +212,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Permission.create",
       "description":      "Allows the user to create a new permission for any of their account/s.",
@@ -124,6 +221,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Permission.edit",
       "description":      "Allows the user to update any permission/s within their account/s.",
@@ -132,6 +230,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Permission.delete",
       "description":      "Allows the user to delete any permission/s within their account/s.",
@@ -140,6 +239,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Permission.assignRole",
       "description":      "Allows the user to assign any permission/s within their account to any role/s within their account/s.",
@@ -148,6 +248,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Role.list",
       "description":      "Allows the user to view a list of role/s within their account/s.",
@@ -156,6 +257,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Role.view",
       "description":      "Allows the user to view details about any role/s within their account/s.",
@@ -164,6 +266,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Role.create",
       "description":      "Allows the user to create a new role for any of their account/s.",
@@ -172,6 +275,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Role.edit",
       "description":      "Allows the user to update any role/s within their account/s.",
@@ -180,6 +284,7 @@
       }
     },
     {
+      "AccountId": 1,
       "systemPermission": true,
       "action":           "Role.delete",
       "description":      "Allows the user to delete any role/s within their account/s.",
