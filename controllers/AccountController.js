@@ -18,7 +18,7 @@ module.exports = function(Controller, AccountService, config, async, $Permission
     route: [
       '[POST] /account/?',
       '/account/:id/?',
-      '/account/:id/:action((?!(role|roles|permission|permissions|user|users|subscription|subscriptions)).)*/?',
+      '/account/:id/:action((?!(roles?|permissions?|users?)).)*/?',
       '/accounts/?',
       '/accounts/:action/?'
     ],
@@ -156,11 +156,11 @@ module.exports = function(Controller, AccountService, config, async, $Permission
 
                   if (method === 'post' || method === 'put') {
                     if (!isAdmin || (!!isAdmin && !accountId)) {
-                      req.body[ !/^[0-9a-fA-F]{24}$/.test(user.Account.id) ? 'AccountId' : 'Account' ]  = user.Account.id || user.Account._id;
+                      req.body.AccountId = parseInt(!/^[0-9a-fA-F]{24}$/.test(user.Account.id) ? user.Account.id : user.Account._id, 10);
                     }
                   } else {
                     if (!isAdmin || (!!isAdmin && !accountId)) {
-                      req.query[ !/^[0-9a-fA-F]{24}$/.test(user.Account.id) ? 'AccountId' : 'Account' ] = user.Account.id || user.Account._id;
+                      req.query.AccountId = parseInt(!/^[0-9a-fA-F]{24}$/.test(user.Account.id) ? user.Account.id : user.Account._id, 10);
                     }
                   }
 
