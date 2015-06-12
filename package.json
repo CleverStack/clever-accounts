@@ -1,7 +1,7 @@
 {
   "name"        : "clever-accounts",
   "description" : "CleverStack Accounts Module",
-  "version"     : "1.2.0",
+  "version"     : "1.2.1",
   "license"     : "MIT",
   "main"        : "module",
   "author": {
