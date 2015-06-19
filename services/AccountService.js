@@ -38,7 +38,7 @@ module.exports = function(Promise, Service, AccountModel, config, UserService, _
               phone         : values.phone || null,
 
               active        : true,
-              confirmed     : config['clever-accounts'].emailConfirmation === true ? false : true,
+              confirmed     : values.confirmed !== undefined ? values.confirmed : (config['clever-accounts'].emailConfirmation === true ? false : true),
 
               hasAdminRight : false
             });
