@@ -16,7 +16,5 @@ See [cleverstack.io](http://cleverstack.io/documentation/#backend) for more deta
 ## Install 
 1. From your project folder run `clever install clever-accounts`
 
-2. In the config file for your desired environment (ie. backend/config/local.json), update the clever-accounts object with the details for your database.
-
-3. From your project's `backend` folder, run `NODE_ENV=local grunt db`.
+2. From your project's `backend` folder, run `grunt db`. (Make sure you have set your NODE_PATH and NODE_ENV)
 The database tables for your modules should now be installed and seeded with data!
